@@ -103,7 +103,8 @@ final class MovieQuizViewController: UIViewController {
         correctAnswers = isCorrect ? correctAnswers + 1 : correctAnswers
         
         self.disableOrEnableButtons(isEnabled: false)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
             self.showNextQuestionOrResults()
             self.disableOrEnableButtons(isEnabled: true)
         }
@@ -125,9 +126,10 @@ final class MovieQuizViewController: UIViewController {
                                           preferredStyle: .alert)
 
             let action = UIAlertAction(title: "Сыграем еще раз?", style: .default) { [weak self] _ in
-                self?.correctAnswers = 0
-                self?.currentQuestionIndex = 0
-                self?.showCurrentQuestion()
+                guard let self = self else { return }
+                self.correctAnswers = 0
+                self.currentQuestionIndex = 0
+                self.showCurrentQuestion()
             }
 
             alert.addAction(action)
