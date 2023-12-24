@@ -16,6 +16,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private var currentQuestion: QuizQuestion?
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
+    private var alertPresenter = AlertPresenter()
     
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var noButton: UIButton!
@@ -29,6 +30,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         
         questionFactory = QuestionFactory(delegate: self)
         questionFactory?.requestNextQuestion()
+        
+        alertPresenter.mainController = self
     }
     
     // MARK: - QuestionFactoryDelegate
@@ -84,20 +87,17 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     private func showNextQuestionOrResults() {
         if currentQuestionIndex == questionsAmount - 1 {
-            let alert = UIAlertController(title: "Игра окончена.",
-                                          message: "Ваш результат: \(correctAnswers)/\(questionsAmount).",
-                                          preferredStyle: .alert)
-
-            let action = UIAlertAction(title: "Сыграем еще раз?", style: .default) { [weak self] _ in
-                guard let self = self else { return }
-                self.correctAnswers = 0
-                self.currentQuestionIndex = 0
-                self.questionFactory?.requestNextQuestion()
-            }
-
-            alert.addAction(action)
-
-            self.present(alert, animated: true, completion: nil)
+            let alert = AlertModel(
+                title: "Игра окончена.",
+                message: "Ваш результат: \(correctAnswers)/\(questionsAmount).",
+                buttonText: "Сыграем еще раз?") { [weak self] _ in
+                    guard let self = self else { return }
+                    self.correctAnswers = 0
+                    self.currentQuestionIndex = 0
+                    self.questionFactory?.requestNextQuestion()
+                }
+            
+            alertPresenter.show(alert: alert)
         } else {
             currentQuestionIndex += 1
             questionFactory?.requestNextQuestion()
