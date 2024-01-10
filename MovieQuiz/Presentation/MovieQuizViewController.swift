@@ -17,6 +17,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
     private var alertPresenter = AlertPresenter()
+    private var statisticsService = StatisticsServiceImplementation()
     
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var noButton: UIButton!
@@ -87,9 +88,18 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     private func showNextQuestionOrResults() {
         if currentQuestionIndex == questionsAmount - 1 {
+            
+            statisticsService.store(correct: correctAnswers, total: questionsAmount)
+            
             let alert = AlertModel(
-                title: "Игра окончена.",
-                message: "Ваш результат: \(correctAnswers)/\(questionsAmount).",
+                title: "Этот раунд окончен!",
+                message: """
+                Ваш результат: \(correctAnswers)/\(questionsAmount)
+                Количество сыгранных квизов: \(statisticsService.gamesCount)
+                Рекорд: \(statisticsService.bestGame.correct)/\(statisticsService.bestGame.total)
+                (\(statisticsService.bestGame.date.dateTimeString))
+                Средняя точность: \(String(format: "%.2f", statisticsService.totalAccuracy * 100))%
+                """,
                 buttonText: "Сыграем еще раз?") { [weak self] _ in
                     guard let self = self else { return }
                     self.correctAnswers = 0
