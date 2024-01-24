@@ -2,9 +2,9 @@ import UIKit
 
 
 struct ViewModel {
-  let image: UIImage
-  let question: String
-  let questionNumber: String
+    let image: UIImage
+    let question: String
+    let questionNumber: String
 }
 
 
@@ -42,7 +42,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         guard let question = question else {
             return
         }
-
+        
         DispatchQueue.main.async { [weak self] in
             self?.currentQuestion = question
             self?.showCurrentQuestion()
@@ -53,7 +53,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         hideLoadingIndicator()
         questionFactory?.requestNextQuestion()
     }
-
+    
     func didFailToLoadData(with error: Error) {
         showNetworkError(message: error.localizedDescription)
     }
@@ -72,7 +72,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         guard let question = currentQuestion else { return }
         
         let isCorrect = question.correctAnswer == answer
-
+        
         imageView.layer.masksToBounds = true
         imageView.layer.borderWidth = 8
         imageView.layer.borderColor =  isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor

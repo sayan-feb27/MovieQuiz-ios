@@ -4,8 +4,8 @@ import UIKit
 class AlertPresenter {
     func show (in controller: UIViewController, alert: AlertModel) {
         let uiAlert = UIAlertController(title: alert.title,
-                                      message: alert.message,
-                                      preferredStyle: .alert)
+                                        message: alert.message,
+                                        preferredStyle: .alert)
         let action = UIAlertAction(title: alert.buttonText, style: .default, handler: alert.action)
         uiAlert.addAction(action)
         
