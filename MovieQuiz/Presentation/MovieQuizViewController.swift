@@ -2,9 +2,9 @@ import UIKit
 
 
 struct ViewModel {
-  let image: UIImage
-  let question: String
-  let questionNumber: String
+    let image: UIImage
+    let question: String
+    let questionNumber: String
 }
 
 
@@ -24,17 +24,17 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     @IBOutlet private weak var yesButton: UIButton!
     @IBOutlet private weak var counterLabel: UILabel!
     @IBOutlet private weak var textLabel: UILabel!
+    @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        questionFactory = QuestionFactory(delegate: self)
-        questionFactory?.requestNextQuestion()
-        
+        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
         statisticsService = StatisticsServiceImplementation()
         
-        alertPresenter.mainController = self
+        showLoadingIndicator()
+        questionFactory?.loadData()
     }
     
     // MARK: - QuestionFactoryDelegate
@@ -42,11 +42,20 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         guard let question = question else {
             return
         }
-
+        
         DispatchQueue.main.async { [weak self] in
             self?.currentQuestion = question
             self?.showCurrentQuestion()
         }
+    }
+    
+    func didLoadDataFromServer() {
+        hideLoadingIndicator()
+        questionFactory?.requestNextQuestion()
+    }
+    
+    func didFailToLoadData(with error: Error) {
+        showNetworkError(message: error.localizedDescription)
     }
     
     // MARK: - Actions
@@ -63,7 +72,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         guard let question = currentQuestion else { return }
         
         let isCorrect = question.correctAnswer == answer
-
+        
         imageView.layer.masksToBounds = true
         imageView.layer.borderWidth = 8
         imageView.layer.borderColor =  isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
@@ -71,9 +80,13 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         correctAnswers = isCorrect ? correctAnswers + 1 : correctAnswers
         
         self.disableOrEnableButtons(isEnabled: false)
+        showLoadingIndicator()
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
+            
             self.showNextQuestionOrResults()
+            hideLoadingIndicator()
             self.disableOrEnableButtons(isEnabled: true)
         }
     }
@@ -119,7 +132,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
                 self.questionFactory?.requestNextQuestion()
             }
         
-        alertPresenter.show(alert: alert)
+        alertPresenter.show(in: self, alert: alert)
     }
     
     private func disableOrEnableButtons(isEnabled: Bool) {
@@ -127,9 +140,40 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         yesButton.isEnabled = isEnabled
     }
     
+    private func showLoadingIndicator() {
+        activityIndicator.isHidden = false
+        activityIndicator.startAnimating()
+    }
+    
+    private func hideLoadingIndicator() {
+        activityIndicator.isHidden = true
+    }
+    
+    private func showNetworkError(message: String) {
+        hideLoadingIndicator()
+        let alert = AlertModel(
+            title: "Что-то пошло не так(",
+            message: "Невозможно загрузить данные",
+            buttonText: "Попробовать еще раз") { [weak self] _ in
+                guard let self = self else { return }
+                self.currentQuestionIndex = 0
+                self.correctAnswers = 0
+                
+                showLoadingIndicator()
+                questionFactory?.loadData()
+            }
+        
+        alertPresenter.show(in: self, alert: alert)
+    }
+    
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
+        var image = UIImage(data: model.image) ?? UIImage(named: "network-errors")
+        if image == nil {
+            image = UIImage()
+        }
+        
         return QuizStepViewModel(
-            image: UIImage(named: model.image) ?? UIImage(),
+            image: image!,
             question: model.text,
             questionNumber: "\(currentQuestionIndex+1)/\(questionsAmount)"
         )
