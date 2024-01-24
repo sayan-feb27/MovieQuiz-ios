@@ -80,9 +80,13 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         correctAnswers = isCorrect ? correctAnswers + 1 : correctAnswers
         
         self.disableOrEnableButtons(isEnabled: false)
+        showLoadingIndicator()
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
+            
             self.showNextQuestionOrResults()
+            hideLoadingIndicator()
             self.disableOrEnableButtons(isEnabled: true)
         }
     }
