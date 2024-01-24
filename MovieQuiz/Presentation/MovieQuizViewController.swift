@@ -152,9 +152,9 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private func showNetworkError(message: String) {
         hideLoadingIndicator()
         let alert = AlertModel(
-            title: "Ошибка",
-            message: "",
-            buttonText: "Попробовать ещё раз") { [weak self] _ in
+            title: "Что-то пошло не так(",
+            message: "Невозможно загрузить данные",
+            buttonText: "Попробовать еще раз") { [weak self] _ in
                 guard let self = self else { return }
                 self.currentQuestionIndex = 0
                 self.correctAnswers = 0
@@ -167,8 +167,13 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     }
     
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
+        var image = UIImage(data: model.image) ?? UIImage(named: "network-errors")
+        if image == nil {
+            image = UIImage()
+        }
+        
         return QuizStepViewModel(
-            image: UIImage(data: model.image) ?? UIImage(),
+            image: image!,
             question: model.text,
             questionNumber: "\(currentQuestionIndex+1)/\(questionsAmount)"
         )
