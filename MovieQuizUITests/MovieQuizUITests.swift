@@ -13,6 +13,7 @@ class MovieQuizUITests: XCTestCase {
         
         continueAfterFailure = false
     }
+    
     override func tearDownWithError() throws {
         try super.tearDownWithError()
         
@@ -21,21 +22,26 @@ class MovieQuizUITests: XCTestCase {
     }
     
     
-    func testYesButton() {
+    func testButtons() {
+        let buttons = ["Yes", "No"]
         sleep(3)
         
-        let firstPoster = app.images["Poster"]
-        let firstPosterData = firstPoster.screenshot().pngRepresentation
-        
-        app.buttons["Yes"].tap()
-        sleep(3)
-        
-        let secondPoster = app.images["Poster"]
-        let secondPosterData = secondPoster.screenshot().pngRepresentation
-        
-        XCTAssertNotEqual(firstPosterData, secondPosterData)
-        
-        let indexLabel = app.staticTexts["Index"]
-        XCTAssertEqual(indexLabel.label, "2/10")
+        for (index, button) in buttons.enumerated() {
+            
+            let firstPoster = app.images["Poster"]
+            let firstPosterData = firstPoster.screenshot().pngRepresentation
+            
+            app.buttons[button].tap()
+            sleep(3)
+            
+            let secondPoster = app.images["Poster"]
+            let secondPosterData = secondPoster.screenshot().pngRepresentation
+            
+            XCTAssertNotEqual(firstPosterData, secondPosterData)
+            
+            let indexLabel = app.staticTexts["Index"]
+            XCTAssertEqual(indexLabel.label,"\(index+2)/10")
+        }
     }
+
 }
