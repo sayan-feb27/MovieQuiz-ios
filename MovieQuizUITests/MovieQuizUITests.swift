@@ -1,7 +1,7 @@
 import XCTest
 
 
-class MovieQuizUITests: XCTestCase {
+final class MovieQuizUITests: XCTestCase {
     // swiftlint:disable:next implicitly_unwrapped_optional
     var app: XCUIApplication!
     
@@ -21,27 +21,36 @@ class MovieQuizUITests: XCTestCase {
         app = nil
     }
     
-    
-    func testButtons() {
-        let buttons = ["Yes", "No"]
+    func testYesButton() {
+        let firstPoster = app.images["Poster"]
+        let firstPosterData = firstPoster.screenshot().pngRepresentation
+        
+        app.buttons["Yes"].tap()
         sleep(3)
         
-        for (index, button) in buttons.enumerated() {
-            
-            let firstPoster = app.images["Poster"]
-            let firstPosterData = firstPoster.screenshot().pngRepresentation
-            
-            app.buttons[button].tap()
-            sleep(3)
-            
-            let secondPoster = app.images["Poster"]
-            let secondPosterData = secondPoster.screenshot().pngRepresentation
-            
-            XCTAssertNotEqual(firstPosterData, secondPosterData)
-            
-            let indexLabel = app.staticTexts["Index"]
-            XCTAssertEqual(indexLabel.label,"\(index+2)/10")
-        }
+        let secondPoster = app.images["Poster"]
+        let secondPosterData = secondPoster.screenshot().pngRepresentation
+        
+        XCTAssertNotEqual(firstPosterData, secondPosterData)
+        
+        let indexLabel = app.staticTexts["Index"]
+        XCTAssertEqual(indexLabel.label,"2/10")
+    }
+    
+    func testNoButton() {
+        let firstPoster = app.images["Poster"]
+        let firstPosterData = firstPoster.screenshot().pngRepresentation
+        
+        app.buttons["No"].tap()
+        sleep(3)
+        
+        let secondPoster = app.images["Poster"]
+        let secondPosterData = secondPoster.screenshot().pngRepresentation
+        
+        XCTAssertNotEqual(firstPosterData, secondPosterData)
+        
+        let indexLabel = app.staticTexts["Index"]
+        XCTAssertEqual(indexLabel.label,"2/10")
     }
 
 }

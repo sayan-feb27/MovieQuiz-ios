@@ -46,10 +46,6 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     }
     
     // MARK: - Internal functions
-    func isLastQuestion() -> Bool {
-        currentQuestionIndex == questionsAmount - 1
-    }
-    
     func resetQuiz() {
         currentQuestionIndex = 0
         correctAnswers = 0
@@ -62,20 +58,6 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     
     func yesButtonClicked() {
         handleUserAnswer(answer: true)
-    }
-    
-    func makeStatisticsMessage() -> String {
-        statisticsService.store(correct: correctAnswers, total: questionsAmount)
-        
-        let message = """
-        Ваш результат: \(correctAnswers)/\(questionsAmount)
-        Количество сыгранных квизов: \(statisticsService.gamesCount)
-        Рекорд: \(statisticsService.bestGame.correct)/\(statisticsService.bestGame.total)
-        (\(statisticsService.bestGame.date.dateTimeString))
-        Средняя точность: \(String(format: "%.2f", statisticsService.totalAccuracy * 100))%
-        """
-        
-        return message
     }
     
     func loadData() {
@@ -96,6 +78,24 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     }
     
     // MARK: - Private functions
+    private func makeStatisticsMessage() -> String {
+        statisticsService.store(correct: correctAnswers, total: questionsAmount)
+        
+        let message = """
+        Ваш результат: \(correctAnswers)/\(questionsAmount)
+        Количество сыгранных квизов: \(statisticsService.gamesCount)
+        Рекорд: \(statisticsService.bestGame.correct)/\(statisticsService.bestGame.total)
+        (\(statisticsService.bestGame.date.dateTimeString))
+        Средняя точность: \(String(format: "%.2f", statisticsService.totalAccuracy * 100))%
+        """
+        
+        return message
+    }
+    
+    private func isLastQuestion() -> Bool {
+        currentQuestionIndex == questionsAmount - 1
+    }
+    
     private func switchToNextQuestion() {
         currentQuestionIndex += 1
     }
