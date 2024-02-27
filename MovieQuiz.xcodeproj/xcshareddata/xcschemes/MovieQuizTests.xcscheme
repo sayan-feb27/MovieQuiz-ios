@@ -1,26 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1500"
+   LastUpgradeVersion = "1520"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
-      <BuildActionEntries>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AD1ABAAD2831907B00B3E448"
-               BuildableName = "MovieQuiz.app"
-               BlueprintName = "MovieQuiz"
-               ReferencedContainer = "container:MovieQuiz.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-      </BuildActionEntries>
    </BuildAction>
    <TestAction
       buildConfiguration = "Debug"
@@ -37,17 +21,6 @@
                BlueprintIdentifier = "AFE1E7782B629538006B037E"
                BuildableName = "MovieQuizTests.xctest"
                BlueprintName = "MovieQuizTests"
-               ReferencedContainer = "container:MovieQuiz.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AF4249A32B63F288009FB7E2"
-               BuildableName = "MovieQuizUITests.xctest"
-               BlueprintName = "MovieQuizUITests"
                ReferencedContainer = "container:MovieQuiz.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -80,8 +53,7 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "AD1ABAAD2831907B00B3E448"
@@ -89,7 +61,7 @@
             BlueprintName = "MovieQuiz"
             ReferencedContainer = "container:MovieQuiz.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
